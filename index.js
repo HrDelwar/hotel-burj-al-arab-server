@@ -64,7 +64,7 @@ client.connect(err => {
                 .then((decodedToken) => {
                     const email = decodedToken.email;
                     const qryEmail = req.query.email;
-                    
+
                     if (email === qryEmail) {
                         const id = req.params.id;
                         bookingCollection.deleteOne({ _id: ObjectId(id) })

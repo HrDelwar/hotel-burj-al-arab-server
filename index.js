@@ -4,15 +4,16 @@ const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const admin = require('firebase-admin');
-const serviceAccount = require("./configs/booking-burj-al-arab-firebase-adminsdk-812v6-9869ec5958.json");
+const configs = require('./configs/config')
 require('dotenv').config();
+
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(configs)
 });
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vzza0.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -29,7 +30,6 @@ client.connect(err => {
                 .then((decodedToken) => {
                     const email = decodedToken.email;
                     const qryEmail = req.query.email;
-                    console.log({ email, qryEmail });
                     if (email === qryEmail) {
                         bookingCollection.find({ email: qryEmail })
                             .toArray((err, docs) => {
@@ -64,7 +64,7 @@ client.connect(err => {
                 .then((decodedToken) => {
                     const email = decodedToken.email;
                     const qryEmail = req.query.email;
-                    console.log({ email, qryEmail });
+                    
                     if (email === qryEmail) {
                         const id = req.params.id;
                         bookingCollection.deleteOne({ _id: ObjectId(id) })
